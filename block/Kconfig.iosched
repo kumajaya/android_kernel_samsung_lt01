@@ -57,6 +57,13 @@ config IOSCHED_SIO
 	  Asynchronous and synchronous requests are not treated separately, but
 	  we rely on deadlines to ensure fairness.
 
+config IOSCHED_VR
+	tristate "V(R) I/O scheduler"
+	default y
+	---help---
+	  Requests are chosen according to SSTF with a penalty of rev_penalty
+	  for switching head direction.
+
 choice
 	prompt "Default I/O scheduler"
 	default DEFAULT_CFQ
@@ -76,6 +83,9 @@ choice
 	config DEFAULT_SIO
 		bool "SIO" if IOSCHED_SIO=y
 
+	config DEFAULT_VR
+		bool "VR" if IOSCHED_VR=y
+
 endchoice
 
 config DEFAULT_IOSCHED
@@ -84,6 +94,7 @@ config DEFAULT_IOSCHED
 	default "cfq" if DEFAULT_CFQ
 	default "noop" if DEFAULT_NOOP
 	default "sio" if DEFAULT_SIO
+	default "vr" if DEFAULT_VR
 
 endmenu
 
