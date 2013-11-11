@@ -1,0 +1,1 @@
+#define MOBICORE_COMPONENT_BUILD_TAG "*** SAMSUNG Exynos 4X12 tbase-200_V002 Release ###"
