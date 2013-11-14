@@ -21,6 +21,8 @@
 
 #define ADC_SAMPLING_CNT	7
 
+#define DEBUG_PRINT 0
+
 struct sec_therm_info {
 	struct device *dev;
 	struct sec_therm_platform_data *pdata;
@@ -199,7 +201,9 @@ static void notify_change_of_temperature(struct sec_therm_info *info)
 	}
 	envp[env_offset] = NULL;
 
+#if DEBUG_PRINT
 	dev_info(info->dev, "%s: uevent: %s\n", __func__, temp_buf);
+#endif
 	kobject_uevent_env(&info->dev->kobj, KOBJ_CHANGE, envp);
 }
 

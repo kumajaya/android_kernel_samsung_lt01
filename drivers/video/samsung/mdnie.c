@@ -118,6 +118,8 @@
 
 #define SCR_RGB_MASK(value)				(value % MDNIE_REG_RED_R)
 
+#define DEBUG_PRINT 0
+
 struct class *mdnie_class;
 struct mdnie_info *g_mdnie;
 
@@ -367,7 +369,9 @@ static int mdnie_set_brightness(struct backlight_device *bd)
 
 	if ((mdnie->enable) && (mdnie->bd_enable)) {
 		ret = update_brightness(mdnie);
+#if DEBUG_PRINT
 		dev_info(&bd->dev, "brightness=%d\n", bd->props.brightness);
+#endif
 		if (ret < 0)
 			return -EINVAL;
 	}
@@ -706,7 +710,9 @@ static ssize_t auto_brightness_store(struct device *dev,
 		return rc;
 	else {
 		if (mdnie->auto_brightness != value) {
+#if DEBUG_PRINT
 			dev_info(dev, "%s: %d, %d\n", __func__, mdnie->auto_brightness, value);
+#endif
 
 			mutex_lock(&mdnie->dev_lock);
 			mdnie->auto_brightness = value;
@@ -989,7 +995,9 @@ static void mdnie_early_suspend(struct early_suspend *h)
 	struct mdnie_info *mdnie = container_of(h, struct mdnie_info, early_suspend);
 	struct lcd_platform_data *pd = mdnie->lcd_pd;
 
+#if DEBUG_PRINT
 	dev_info(mdnie->dev, "+%s\n", __func__);
+#endif
 
 	mdnie->bd_enable = FALSE;
 
@@ -999,7 +1007,9 @@ static void mdnie_early_suspend(struct early_suspend *h)
 	if (pd && pd->power_on)
 		pd->power_on(NULL, 0);
 
+#if DEBUG_PRINT
 	dev_info(mdnie->dev, "-%s\n", __func__);
+#endif
 
 	return;
 }
@@ -1012,7 +1022,9 @@ static void mdnie_late_resume(struct early_suspend *h)
 	struct lcd_platform_data *pd = mdnie->lcd_pd;
 #endif
 
+#if DEBUG_PRINT
 	dev_info(mdnie->dev, "+%s\n", __func__);
+#endif
 
 #if defined(CONFIG_FB_MDNIE_PWM)
 	if (mdnie->enable)
@@ -1022,7 +1034,9 @@ static void mdnie_late_resume(struct early_suspend *h)
 		pd->power_on(NULL, 1);
 
 	if (mdnie->enable) {
+#if DEBUG_PRINT
 		dev_info(&mdnie->bd->dev, "brightness=%d\n", mdnie->bd->props.brightness);
+#endif
 		update_brightness(mdnie);
 	}
 
@@ -1031,7 +1045,9 @@ static void mdnie_late_resume(struct early_suspend *h)
 
 	mdnie_update(mdnie);
 
+#if DEBUG_PRINT
 	dev_info(mdnie->dev, "-%s\n", __func__);
+#endif
 
 	return;
 }

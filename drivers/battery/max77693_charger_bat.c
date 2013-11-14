@@ -16,7 +16,9 @@
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
 
-#define DEBUG
+/* #define DEBUG */
+
+#define DEBUG_PRINT 0
 
 #define ENABLE 1
 #define DISABLE 0
@@ -184,7 +186,9 @@ static void max77693_set_charger_state(struct max77693_charger_data *charger,
 	else
 		reg_data &= ~MAX77693_MODE_CHGR;
 
+#if DEBUG_PRINT
 	pr_info("%s: CHG_CNFG_00(0x%02x)\n", __func__, reg_data);
+#endif
 	max77693_write_reg(charger->max77693->i2c,
 			MAX77693_CHG_REG_CHG_CNFG_00, reg_data);
 }
@@ -328,11 +332,15 @@ static int max77693_get_input_current(struct max77693_charger_data *charger)
 	if (charger->cable_type == POWER_SUPPLY_TYPE_WIRELESS) {
 		max77693_read_reg(charger->max77693->i2c,
 				MAX77693_CHG_REG_CHG_CNFG_10, &reg_data);
+#if DEBUG_PRINT
 		pr_info("%s: CHG_CNFG_10(0x%02x)\n", __func__, reg_data);
+#endif
 	} else {
 		max77693_read_reg(charger->max77693->i2c,
 				MAX77693_CHG_REG_CHG_CNFG_09, &reg_data);
+#if DEBUG_PRINT
 		pr_info("%s: CHG_CNFG_09(0x%02x)\n", __func__, reg_data);
+#endif
 	}
 	get_current = reg_data * 20;
 
@@ -510,7 +518,9 @@ static int max77693_get_vbus_state(struct max77693_charger_data *charger)
 			__func__);
 		break;
 	case 0x03:
+#if DEBUG_PRINT
 		pr_info("%s: VBUS is valid. CHGIN < CHGIN_OVLO", __func__);
+#endif
 		break;
 	default:
 		break;
@@ -527,7 +537,9 @@ static int max77693_get_charger_state(struct max77693_charger_data *charger)
 	max77693_read_reg(charger->max77693->i2c,
 		MAX77693_CHG_REG_CHG_DTLS_01, &reg_data);
 	reg_data = ((reg_data & MAX77693_CHG_DTLS) >> MAX77693_CHG_DTLS_SHIFT);
+#if DEBUG_PRINT
 	pr_info("%s: CHG_DTLS : 0x%2x\n", __func__, reg_data);
+#endif
 
 	switch (reg_data) {
 	case 0x0:
@@ -584,7 +596,9 @@ static int max77693_get_health_state(struct max77693_charger_data *charger)
 		state = POWER_SUPPLY_HEALTH_DEAD;
 		break;
 	case 0x03:
+#if DEBUG_PRINT
 		pr_info("%s: battery good\n", __func__);
+#endif
 		state = POWER_SUPPLY_HEALTH_GOOD;
 		break;
 	case 0x04:
@@ -654,8 +668,10 @@ static int sec_chg_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_CURRENT_MAX:
 		val->intval = charger->charging_current_max;
 		input_current = max77693_get_input_current(charger);
+#if DEBUG_PRINT
 		pr_info("%s: max77693 Inow(%dmA)\n",
 			__func__, input_current);
+#endif
 		break;
 	case POWER_SUPPLY_PROP_CURRENT_AVG:
 		val->intval = charger->charging_current;
@@ -831,7 +847,9 @@ static void max77693_charger_initialize(struct max77693_charger_data *charger)
 	max77693_write_reg(charger->max77693->i2c,
 		MAX77693_CHG_REG_CHG_CNFG_04, reg_data);
 
+#if DEBUG_PRINT
 	max77693_dump_reg(charger);
+#endif
 }
 
 static void sec_chg_isr_work(struct work_struct *work)

@@ -10,7 +10,9 @@
  * published by the Free Software Foundation.
  */
 
-#define DEBUG
+/* #define DEBUG */
+
+#define DEBUG_PRINT 0
 
 #include <linux/battery/sec_battery.h>
 
@@ -774,6 +776,7 @@ static bool sec_bat_temperature(
 	bool ret;
 	ret = true;
 
+#if DEBUG_PRINT
 	if (battery->pdata->event_check && battery->event) {
 		battery->temp_high_threshold =
 			battery->pdata->temp_high_threshold_event;
@@ -809,6 +812,7 @@ static bool sec_bat_temperature(
 		battery->temp_high_recovery,
 		battery->temp_low_threshold,
 		battery->temp_low_recovery);
+#endif
 	return ret;
 }
 
@@ -1133,9 +1137,11 @@ static bool sec_bat_time_management(
 
 	battery->charging_passed_time = charging_time;
 
+#if DEBUG_PRINT
 	dev_info(battery->dev,
 		"%s: Charging Time : %ld secs\n", __func__,
 		battery->charging_passed_time);
+#endif
 
 	switch (battery->status) {
 	case POWER_SUPPLY_STATUS_FULL:
@@ -1430,11 +1436,13 @@ static bool sec_bat_fullcharged_check(
 	if (sec_bat_check_fullcharged(battery))
 		sec_bat_do_fullcharged(battery);
 
+#if DEBUG_PRINT
 	dev_info(battery->dev,
 		"%s: Charging Mode : %s\n", __func__,
 		battery->is_recharging ?
 		sec_bat_charging_mode_str[SEC_BATTERY_CHARGING_RECHARGING] :
 		sec_bat_charging_mode_str[battery->charging_mode]);
+#endif
 
 	return true;
 }
@@ -1519,11 +1527,13 @@ static void sec_bat_get_battery_info(
 		break;
 	}
 
+#if DEBUG_PRINT
 	dev_info(battery->dev,
 		"%s:Vnow(%dmV),Inow(%dmA),Imax(%dmA),SOC(%d%%),Tbat(%d)\n",
 		__func__,
 		battery->voltage_now, battery->current_now,
 		battery->current_max, battery->capacity, battery->temperature);
+#endif
 	dev_dbg(battery->dev,
 		"%s,Vavg(%dmV),Vocv(%dmV),Tamb(%d),"
 		"Iavg(%dmA),Iadc(%d)\n",
@@ -1768,6 +1778,7 @@ static void sec_bat_monitor_work(
 	sec_bat_fullcharged_check(battery);
 
 continue_monitor:
+#if DEBUG_PRINT
 	dev_info(battery->dev,
 		"%s: Status(%s), Mode(%s), Health(%s), Cable(%d), siop_level(%d)\n",
 		__func__,
@@ -1775,6 +1786,7 @@ continue_monitor:
 		sec_bat_charging_mode_str[battery->charging_mode],
 		sec_bat_health_str[battery->health],
 		battery->cable_type, battery->siop_level);
+#endif
 
 	power_supply_changed(&battery->psy_bat);
 

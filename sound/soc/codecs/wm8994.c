@@ -48,6 +48,8 @@
 #define WM8994_NUM_DRC 3
 #define WM8994_NUM_EQ  3
 
+#define DEBUG_PRINT 0
+
 static int wm8994_drc_base[] = {
 	WM8994_AIF1_DRC1_1,
 	WM8994_AIF1_DRC2_1,
@@ -2142,7 +2144,9 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
 	u16 reg, clk1, aif_reg, aif_src;
 	unsigned long timeout;
 	bool was_enabled;
+#if DEBUG_PRINT
 	dev_info(codec->dev, "%s ++\n", __func__);
+#endif
 
 	switch (id) {
 	case WM8994_FLL1:
@@ -2306,7 +2310,9 @@ out:
 	wm8994->fll[id].src = src;
 
 	configure_clock(codec);
+#if DEBUG_PRINT
 	dev_info(codec->dev, "%s --\n", __func__);
+#endif
 	return 0;
 }
 

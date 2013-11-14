@@ -36,6 +36,8 @@
 #include "modem_link_device_hsic.h"
 #include "modem_utils.h"
 
+#define DEBUG_PRINT 0
+
 static struct modem_ctl *if_usb_get_modemctl(struct link_pm_data *pm_data);
 static int link_pm_runtime_get_active(struct link_pm_data *pm_data);
 static int usb_tx_urb_with_skb(struct usb_device *usbdev, struct sk_buff *skb,
@@ -194,7 +196,9 @@ static void usb_rx_retry_work(struct work_struct *work)
 	switch (pipe_data->format) {
 	case IF_USB_FMT_EP:
 		if (usb_ld->if_usb_is_main) {
+#if DEBUG_PRINT
 			pr_urb("IPC-RX, retry", urb);
+#endif
 			iod_format = IPC_FMT;
 		} else {
 			iod_format = IPC_BOOT;
@@ -269,7 +273,9 @@ static void usb_rx_complete(struct urb *urb)
 		switch (pipe_data->format) {
 		case IF_USB_FMT_EP:
 			if (usb_ld->if_usb_is_main) {
+#if DEBUG_PRINT
 				pr_urb("IPC-RX", urb);
+#endif
 				iod_format = IPC_FMT;
 			} else {
 				iod_format = IPC_BOOT;
@@ -478,8 +484,10 @@ static int _usb_tx_work(struct sk_buff *skb)
 	if (!pipe_data)
 		return -ENOENT;
 
+#if DEBUG_PRINT
 	if (iod->format == IPC_FMT && usb_ld->if_usb_is_main)
 		pr_skb("IPC-TX", skb);
+#endif
 
 	if (iod->format == IPC_RAW)
 		mif_debug("TX[RAW]\n");
@@ -745,7 +753,9 @@ static inline int link_pm_slave_wake(struct link_pm_data *pm_data)
 			mdelay(5);
 		}
 		gpio_set_value(pm_data->gpio_link_slavewake, 1);
+#if DEBUG_PRINT
 		mif_info("gpio [SWK] set [1]\n");
+#endif
 		mdelay(5);
 
 		/* wait host wake signal*/
@@ -814,7 +824,9 @@ static void link_pm_runtime_work(struct work_struct *work)
 		break;
 	case RPM_SUSPENDING:
 		/* Checking the usb_runtime_suspend running time.*/
+#if DEBUG_PRINT
 		mif_info("rpm_states=%d", dev->power.runtime_status);
+#endif
 		msleep(20);
 		break;
 	default:
@@ -860,7 +872,9 @@ static irqreturn_t link_pm_irq_handler(int irq, void *data)
 		runtime pm status changes to ACTIVE
 	*/
 	value = gpio_get_value(pm_data->gpio_link_hostwake);
+#if DEBUG_PRINT
 	mif_info("gpio [HWK] get [%d]\n", value);
+#endif
 
 	/*
 	* igonore host wakeup interrupt at suspending kernel

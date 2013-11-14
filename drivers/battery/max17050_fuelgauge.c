@@ -10,7 +10,9 @@
  * published by the Free Software Foundation.
  */
 
-#define DEBUG
+/* #define DEBUG */
+
+#define DEBUG_PRINT 0
 
 #include <linux/battery/sec_fuelgauge.h>
 
@@ -628,6 +630,7 @@ static void fg_write_and_verify_register(struct i2c_client *client,
 
 static void fg_test_print(struct i2c_client *client)
 {
+#if DEBUG_PRINT
 	u8 data[2];
 	u32 average_vcell;
 	u16 w_data;
@@ -667,10 +670,12 @@ static void fg_test_print(struct i2c_client *client)
 	reg_data = fg_read_register(client, REMCAP_AV_REG);
 	dev_info(&client->dev, "%s: REMCAP_AV(%d), data(0x%04x)\n", __func__,
 		reg_data/2, reg_data);
+#endif
 }
 
 static void fg_periodic_read(struct i2c_client *client)
 {
+#if DEBUG_PRINT
 	u8 reg;
 	int i;
 	int data[0x10];
@@ -699,6 +704,7 @@ static void fg_periodic_read(struct i2c_client *client)
 	dev_info(&client->dev, "%s", str);
 
 	kfree(str);
+#endif
 }
 
 static void fg_read_regs(struct i2c_client *client, char *str)
@@ -722,7 +728,9 @@ static void fg_read_regs(struct i2c_client *client, char *str)
 
 static int fg_read_vcell(struct i2c_client *client)
 {
+#if DEBUG_PRINT
 	struct sec_fuelgauge_info *fuelgauge = i2c_get_clientdata(client);
+#endif
 	u8 data[2];
 	u32 vcell;
 	u16 w_data;
@@ -743,9 +751,11 @@ static int fg_read_vcell(struct i2c_client *client)
 	temp2 = temp / 1000000;
 	vcell += (temp2 << 4);
 
+#if DEBUG_PRINT
 	if (!(fuelgauge->info.pr_cnt % PRINT_COUNT))
 		dev_info(&client->dev, "%s: VCELL(%d), data(0x%04x)\n",
 			__func__, vcell, (data[1]<<8) | data[0]);
+#endif
 
 	return vcell;
 }
@@ -884,9 +894,11 @@ static int fg_read_temp(struct i2c_client *client)
 	} else
 		temper = 20000;
 
+#if DEBUG_PRINT
 	if (!(fuelgauge->info.pr_cnt % PRINT_COUNT))
 		dev_info(&client->dev, "%s: TEMPERATURE(%d), data(0x%04x)\n",
 			__func__, temper, (data[1]<<8) | data[0]);
+#endif
 
 	return temper/100;
 }
@@ -1087,8 +1099,10 @@ static int fg_read_current(struct i2c_client *client, int unit)
 
 	if (!(fuelgauge->info.pr_cnt++ % PRINT_COUNT)) {
 		fg_test_print(client);
+#if DEBUG_PRINT
 		dev_info(&client->dev, "%s: CURRENT(%dmA), AVG_CURRENT(%dmA)\n",
 			__func__, i_current, avg_current);
+#endif
 		fuelgauge->info.pr_cnt = 1;
 		/* Read max17050's all registers every 5 minute. */
 		fg_periodic_read(client);
@@ -1270,7 +1284,9 @@ static void fg_read_model_data(struct i2c_client *client)
 	int i;
 	int relock_check;
 
+#if DEBUG_PRINT
 	dev_info(&client->dev, "[FG_Model] ");
+#endif
 
 	/* Unlock model access */
 	fg_write_register(client, 0x62, 0x0059);
@@ -1281,6 +1297,7 @@ static void fg_read_model_data(struct i2c_client *client)
 	fg_read_16register(client, 0x90, data1);
 	fg_read_16register(client, 0xa0, data2);
 
+#if DEBUG_PRINT
 	/* Print model data */
 	for (i = 0; i < 16; i++)
 		dev_info(&client->dev, "0x%04x, ", data0[i]);
@@ -1294,6 +1311,7 @@ static void fg_read_model_data(struct i2c_client *client)
 		else
 			dev_info(&client->dev, "0x%04x, ", data2[i]);
 	}
+#endif
 
 	do {
 		relock_check = 0;
@@ -1611,10 +1629,12 @@ void fg_check_vf_fullcap_range(struct i2c_client *client)
 	/* compare with initial capacity */
 	if (new_vffullcap >
 		(get_battery_data(fuelgauge).Capacity * 110 / 100)) {
+#if DEBUG_PRINT
 		dev_info(&client->dev,
 			"%s: [Case 1] capacity = 0x%04x, NewVfFullCap = 0x%04x\n",
 			__func__, get_battery_data(fuelgauge).Capacity,
 			new_vffullcap);
+#endif
 
 		new_vffullcap =
 			(get_battery_data(fuelgauge).Capacity * 110) / 100;
@@ -1624,10 +1644,12 @@ void fg_check_vf_fullcap_range(struct i2c_client *client)
 		fg_write_register(client, DPACC_REG, (u16)0x3200);
 	} else if (new_vffullcap <
 		(get_battery_data(fuelgauge).Capacity * 50 / 100)) {
+#if DEBUG_PRINT
 		dev_info(&client->dev,
 			"%s: [Case 5] capacity = 0x%04x, NewVfFullCap = 0x%04x\n",
 			__func__, get_battery_data(fuelgauge).Capacity,
 			new_vffullcap);
+#endif
 
 		new_vffullcap =
 			(get_battery_data(fuelgauge).Capacity * 50) / 100;
@@ -1639,10 +1661,12 @@ void fg_check_vf_fullcap_range(struct i2c_client *client)
 	/* compare with previous capacity */
 		if (new_vffullcap >
 			(fuelgauge->info.previous_vffullcap * 110 / 100)) {
+#if DEBUG_PRINT
 			dev_info(&client->dev,
 				"%s: [Case 2] previous_vffullcap = 0x%04x, NewVfFullCap = 0x%04x\n",
 				__func__, fuelgauge->info.previous_vffullcap,
 				new_vffullcap);
+#endif
 
 			new_vffullcap =
 				(fuelgauge->info.previous_vffullcap * 110) /
@@ -1653,10 +1677,12 @@ void fg_check_vf_fullcap_range(struct i2c_client *client)
 			fg_write_register(client, DPACC_REG, (u16)0x3200);
 		} else if (new_vffullcap <
 			(fuelgauge->info.previous_vffullcap * 90 / 100)) {
+#if DEBUG_PRINT
 			dev_info(&client->dev,
 				"%s: [Case 3] previous_vffullcap = 0x%04x, NewVfFullCap = 0x%04x\n",
 				__func__, fuelgauge->info.previous_vffullcap,
 				new_vffullcap);
+#endif
 
 			new_vffullcap =
 				(fuelgauge->info.previous_vffullcap * 90) / 100;
@@ -1665,10 +1691,12 @@ void fg_check_vf_fullcap_range(struct i2c_client *client)
 				(u16)(new_vffullcap / 4));
 			fg_write_register(client, DPACC_REG, (u16)0x3200);
 		} else {
+#if DEBUG_PRINT
 			dev_info(&client->dev,
 				"%s: [Case 4] previous_vffullcap = 0x%04x, NewVfFullCap = 0x%04x\n",
 				__func__, fuelgauge->info.previous_vffullcap,
 				new_vffullcap);
+#endif
 			is_vffullcap_changed = false;
 		}
 	}
@@ -1953,9 +1981,11 @@ static int get_fuelgauge_soc(struct i2c_client *client)
 		(ts.tv_sec - fuelgauge->info.fullcap_check_interval);
 	if (fullcap_check_interval >
 		VFFULLCAP_CHECK_INTERVAL) {
+#if DEBUG_PRINT
 		dev_info(&client->dev,
 			"%s: check fullcap range (interval:%d)\n",
 			__func__, fullcap_check_interval);
+#endif
 		fg_check_vf_fullcap_range(client);
 		fuelgauge->info.fullcap_check_interval = ts.tv_sec;
 	}

@@ -25,6 +25,8 @@
 #include <linux/reboot.h>
 #endif
 
+#define DEBUG_PRINT 0
+
 #if defined(CONFIG_RTC_POWER_OFF)
 extern bool fake_shut_down;
 #endif
@@ -236,9 +238,11 @@ static int s5m_rtc_read_time(struct device *dev, struct rtc_time *tm)
 		goto out;
 	}
 
+#if DEBUG_PRINT
 	printk(KERN_INFO "%s: %d/%d/%d %d:%d:%d(%d)\n", __func__,
 		1900 + tm->tm_year, 1 + tm->tm_mon, tm->tm_mday,
 		tm->tm_hour, tm->tm_min, tm->tm_sec, tm->tm_wday);
+#endif
 
 out:
 	mutex_unlock(&info->lock);

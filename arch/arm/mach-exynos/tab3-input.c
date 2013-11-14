@@ -18,6 +18,8 @@
 #include <plat/iic.h>
 #include <linux/regulator/consumer.h>
 
+#define DEBUG_PRINT 0
+
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_MXT1188S
 #include <linux/interrupt.h>
 #include <linux/i2c/mxt1188s.h>
@@ -318,8 +320,10 @@ int melfas_power(bool on)
 	if (tsp_power_enabled == on)
 		return 0;
 
+#if DEBUG_PRINT
 	printk(KERN_DEBUG "[TSP] %s %s\n",
 		__func__, on ? "on" : "off");
+#endif
 
 	regulator_vdd = regulator_get(NULL, "tsp_vdd_3.3v");
 	if (IS_ERR(regulator_vdd))
@@ -556,8 +560,10 @@ int melfas_power(bool on)
 	if (tsp_power_enabled == on)
 		return 0;
 
+#if DEBUG_PRINT
 	printk(KERN_DEBUG "[TSP] %s %s\n",
 		__func__, on ? "on" : "off");
+#endif
 
 	regulator_vdd = regulator_get(NULL, "tsp_vdd_3.3v");
 	if (IS_ERR(regulator_vdd))
@@ -598,8 +604,10 @@ int key_led_control(bool on)
 	if (tsp_keyled_enabled == on)
 		return 0;
 
+#if DEBUG_PRINT
 	printk(KERN_DEBUG "[TSP] %s %s\n",
 		__func__, on ? "on" : "off");
+#endif
 
 	regulator = regulator_get(NULL, "vtouch_3.3v");
 	if (IS_ERR(regulator))

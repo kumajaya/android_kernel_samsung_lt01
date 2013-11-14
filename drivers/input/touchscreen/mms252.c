@@ -14,9 +14,10 @@
  *
  */
 
-#define DEBUG
+/* #define DEBUG */
 /* #define VERBOSE_DEBUG */
 #define SEC_TSP_DEBUG
+#define DEBUG_PRINT 0
 
 /* #define FORCE_FW_FLASH */
 /* #define FORCE_FW_PASS */
@@ -161,7 +162,7 @@ int touch_is_pressed;
 
 #define MMS_CMD_ENTER_ISC	0x5F
 
-#define FLASH_VERBOSE_DEBUG	1
+#define FLASH_VERBOSE_DEBUG	0
 
 enum {
 	ISC_NONE = -1,
@@ -411,8 +412,10 @@ static void change_dvfs_lock(struct work_struct *work)
 	if (ret < 0)
 		pr_err("%s: dev change bud lock failed(%d)\n",\
 				__func__, __LINE__);
+#if DEBUG_PRINT
 	else
-		pr_info("[TSP] change_dvfs_lock");
+		pr_info("[TSP] change_dvfs_lock\n");
+#endif
 	mutex_unlock(&info->dvfs_lock);
 }
 static void set_dvfs_off(struct work_struct *work)
@@ -431,7 +434,9 @@ static void set_dvfs_off(struct work_struct *work)
 
 	exynos_cpufreq_lock_free(DVFS_LOCK_ID_TSP);
 	info->dvfs_lock_status = false;
+#if DEBUG_PRINT
 	pr_info("[TSP] DVFS Off!");
+#endif
 	mutex_unlock(&info->dvfs_lock);
 	}
 
@@ -472,7 +477,9 @@ static void set_dvfs_lock(struct mms_ts_info *info, uint32_t on)
 				msecs_to_jiffies(TOUCH_BOOSTER_CHG_TIME));
 
 			info->dvfs_lock_status = true;
+#if DEBUG_PRINT
 			pr_info("[TSP] DVFS On![%d]", info->cpufreq_level);
+#endif
 		}
 	} else if (on == 2) {
 		cancel_delayed_work(&info->work_dvfs_off);
@@ -544,23 +551,33 @@ static void release_all_fingers(struct mms_ts_info *info)
 	input_sync(info->input_dev);
 #if TOUCH_BOOSTER
 	set_dvfs_lock(info, 2);
+#if DEBUG_PRINT
 	pr_info("[TSP] dvfs_lock free.\n ");
+#endif
 #endif
 }
 
 static void mms_set_noise_mode(struct mms_ts_info *info)
 {
+#if DEBUG_PRINT
 	struct i2c_client *client = info->client;
+#endif
 
 	if (!(info->noise_mode && info->enabled))
 		return;
+#if DEBUG_PRINT
 	dev_notice(&client->dev, "%s\n", __func__);
+#endif
 
 	if (info->ta_status) {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "noise_mode & TA connect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x30, 0x1);
 	} else {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "noise_mode & TA disconnect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x30, 0x2);
 		info->noise_mode = 0;
 	}
@@ -588,12 +605,16 @@ static int mms_reset(struct mms_ts_info *info)
 
 static void reset_mms_ts(struct mms_ts_info *info)
 {
+#if DEBUG_PRINT
 	struct i2c_client *client = info->client;
+#endif
 
 	if (info->enabled == false)
 		return;
 
+#if DEBUG_PRINT
 	dev_notice(&client->dev, "%s++\n", __func__);
+#endif
 	disable_irq_nosync(info->irq);
 	info->enabled = false;
 	touch_is_pressed = 0;
@@ -604,35 +625,49 @@ static void reset_mms_ts(struct mms_ts_info *info)
 
 	info->enabled = true;
 	if (info->ta_status) {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "TA connect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x1);
 	} else {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "TA disconnect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x2);
 	}
 	mms_set_noise_mode(info);
 
 	enable_irq(info->irq);
 
+#if DEBUG_PRINT
 	dev_notice(&client->dev, "%s--\n", __func__);
+#endif
 }
 
 static void melfas_ta_cb(struct tsp_callbacks *cb, bool ta_status)
 {
 	struct mms_ts_info *info =
 			container_of(cb, struct mms_ts_info, callbacks);
+#if DEBUG_PRINT
 	struct i2c_client *client = info->client;
+#endif
 
+#if DEBUG_PRINT
 	dev_notice(&client->dev, "%s\n", __func__);
+#endif
 
 	info->ta_status = ta_status;
 
 	if (info->enabled) {
 		if (info->ta_status) {
+#if DEBUG_PRINT
 			dev_notice(&client->dev, "TA connect!!!\n");
+#endif
 			i2c_smbus_write_byte_data(info->client, 0x33, 0x1);
 		} else {
+#if DEBUG_PRINT
 			dev_notice(&client->dev, "TA disconnect!!!\n");
+#endif
 			i2c_smbus_write_byte_data(info->client, 0x33, 0x2);
 		}
 		mms_set_noise_mode(info);
@@ -760,8 +795,10 @@ static irqreturn_t mms_ts_interrupt(int irq, void *dev_id)
 				input_report_key(info->input_dev,
 					info->keycode[keycode], 0);
 #ifdef CONFIG_SAMSUNG_PRODUCT_SHIP
+#if DEBUG_PRINT
 				dev_notice(&client->dev,
 					"key R(%d)\n", info->panel);
+#endif
 #else
 				dev_notice(&client->dev,
 					"key R : %d(%d)(%d)\n",
@@ -772,8 +809,10 @@ static irqreturn_t mms_ts_interrupt(int irq, void *dev_id)
 				input_report_key(info->input_dev,
 					info->keycode[keycode], 1);
 #ifdef CONFIG_SAMSUNG_PRODUCT_SHIP
+#if DEBUG_PRINT
 				dev_notice(&client->dev,
 					"key P(%d)\n", info->panel);
+#endif
 #else
 				dev_notice(&client->dev,
 					"key P : %d(%d)(%d)\n",
@@ -837,14 +876,16 @@ static irqreturn_t mms_ts_interrupt(int irq, void *dev_id)
 #ifdef CONFIG_SAMSUNG_PRODUCT_SHIP
 			if (info->finger_state[id] != 0) {
 				info->finger_state[id] = 0;
+#if DEBUG_PRINT
 				dev_notice(&client->dev,
-					"R [%2d](%d)", id, info->panel);
+					"R [%2d](%d)\n", id, info->panel);
+#endif
 			}
 #else /*CONFIG_SAMSUNG_PRODUCT_SHIP */
 			if (info->finger_state[id] != 0) {
 				info->finger_state[id] = 0;
 				dev_notice(&client->dev,
-					"R [%2d],([%4d],[%3d])(%d)",
+					"R [%2d],([%4d],[%3d])(%d)\n",
 					id, x, y, info->panel);
 			}
 
@@ -872,14 +913,16 @@ static irqreturn_t mms_ts_interrupt(int irq, void *dev_id)
 #ifdef CONFIG_SAMSUNG_PRODUCT_SHIP
 		if (info->finger_state[id] == 0) {
 			info->finger_state[id] = 1;
+#if DEBUG_PRINT
 			dev_notice(&client->dev,
-				"P [%2d](%d)", id, info->panel);
+				"P [%2d](%d)\n", id, info->panel);
+#endif
 		}
 #else /* CONFIG_SAMSUNG_PRODUCT_SHIP */
 		if (info->finger_state[id] == 0) {
 			info->finger_state[id] = 1;
 			dev_notice(&client->dev,
-				"P [%2d],([%3d],[%4d]) w=%d, major=%d, minor=%d, angle=%d, palm=%d(%d)",
+				"P [%2d],([%3d],[%4d]) w=%d, major=%d, minor=%d, angle=%d, palm=%d(%d)\n",
 				id, x, y, tmp[4], tmp[6], tmp[7],
 				angle, palm, info->panel);
 		}
@@ -1211,10 +1254,14 @@ static void get_raw_data(struct mms_ts_info *info, u8 cmd)
 	info->enabled = true;
 
 	if (info->ta_status) {
+#if DEBUG_PRINT
 		dev_notice(&info->client->dev, "TA connect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x1);
 	} else {
+#if DEBUG_PRINT
 		dev_notice(&info->client->dev, "TA disconnect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x2);
 	}
 	mms_set_noise_mode(info);
@@ -2418,11 +2465,15 @@ static ssize_t touch_led_control(struct device *dev,
 	}
 
 	if (data == 1) {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "led on\n");
+#endif
 		info->pdata->keyled(1);
 		info->led_cmd = true;
 	} else {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "led off\n");
+#endif
 		info->pdata->keyled(0);
 		info->led_cmd = false;
 	}
@@ -3118,8 +3169,10 @@ static int mms_ts_suspend(struct device *dev)
 	if (!info->enabled)
 		return 0;
 
+#if DEBUG_PRINT
 	dev_notice(&info->client->dev, "%s: users=%d\n", __func__,
 		   info->input_dev->users);
+#endif
 
 	disable_irq(info->irq);
 	info->enabled = false;
@@ -3147,8 +3200,10 @@ static int mms_ts_resume(struct device *dev)
 	if (info->enabled)
 		return 0;
 
+#if DEBUG_PRINT
 	dev_notice(&info->client->dev, "%s: users=%d\n", __func__,
 		   info->input_dev->users);
+#endif
 	info->pdata->power(1);
 	msleep(120);
 
@@ -3156,10 +3211,14 @@ static int mms_ts_resume(struct device *dev)
 		mms_set_threewave_mode(info);
 
 	if (info->ta_status) {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "TA connect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x1);
 	} else {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "TA disconnect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x2);
 	}
 	info->enabled = true;

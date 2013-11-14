@@ -898,9 +898,11 @@ static void cm36653_work_func_light(struct work_struct *work)
 	input_sync(cm36653->light_input_dev);
 
 	if (cm36653->count_log_time >= LIGHT_LOG_TIME) {
+#ifdef CM36653_DEBUG
 		pr_info("%s, red = %u green = %u blue = %u white = %u\n",
 			__func__, cm36653->color[0]+1, cm36653->color[1]+1,
 			cm36653->color[2]+1, cm36653->color[3]+1);
+#endif
 		cm36653->count_log_time = 0;
 	} else
 		cm36653->count_log_time++;

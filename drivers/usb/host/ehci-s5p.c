@@ -36,6 +36,8 @@ static const char hsic_pm_dev[] = "mdm_hsic_pm0";
 #include <mach/sec_modem.h>
 #endif
 
+#define DEBUG_PRINT 0
+
 struct s5p_ehci_hcd {
 	struct device *dev;
 	struct usb_hcd *hcd;
@@ -366,9 +368,11 @@ static int s5p_ehci_runtime_suspend(struct device *dev)
 #endif
 
 #if defined(CONFIG_LINK_DEVICE_HSIC)
+#if DEBUG_PRINT
 	pr_info("%s: usage=%d, child=%d\n", __func__,
 					atomic_read(&dev->power.usage_count),
 					atomic_read(&dev->power.child_count));
+#endif
 #endif
 	return 0;
 }
@@ -422,9 +426,11 @@ static int s5p_ehci_runtime_resume(struct device *dev)
 #endif
 	}
 #if defined(CONFIG_LINK_DEVICE_HSIC)
+#if DEBUG_PRINT
 	pr_info("%s: usage=%d, child=%d\n", __func__,
 					atomic_read(&dev->power.usage_count),
 					atomic_read(&dev->power.child_count));
+#endif
 #endif
 	return 0;
 }

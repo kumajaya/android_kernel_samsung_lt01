@@ -29,11 +29,17 @@
 #include <linux/input.h>
 #endif
 
+#define DEBUG_PRINT 0
+
 /* For Debugging */
 #if 1
 #define k3dh_dbgmsg(str, args...) pr_debug("%s: " str, __func__, ##args)
 #endif
+#if DEBUG_PRINT
 #define k3dh_infomsg(str, args...) pr_info("%s: " str, __func__, ##args)
+#else
+#define k3dh_infomsg(str, args...) pr_debug("%s: " str, __func__, ##args)
+#endif
 
 #define VENDOR		"STM"
 #define CHIP_ID		"K3DH"
@@ -550,7 +556,9 @@ static ssize_t k3dh_enable_store(struct device *dev,
 			goto done;
 	}
 	atomic_set(&data->enable, enable);
+#if DEBUG_PRINT
 	pr_info("%s, enable = %ld\n", __func__, enable);
+#endif
 done:
 	return count;
 }
@@ -583,7 +591,9 @@ static ssize_t k3dh_delay_store(struct device *dev,
 		delay = MIN_DELAY;
 	atomic_set(&data->delay, delay);
 	k3dh_set_delay(data, delay * 1000000);
+#if DEBUG_PRINT
 	pr_info("%s, delay = %ld\n", __func__, delay);
+#endif
 	return count;
 }
 static DEVICE_ATTR(poll_delay,
