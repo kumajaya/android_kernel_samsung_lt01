@@ -1167,8 +1167,7 @@ static bool sec_bat_time_management(
 			battery->pdata->recharging_total_time))) {
 			dev_info(battery->dev,
 			"%s: Recharging Timer Expired\n", __func__);
-			if (battery->voltage_now >
-				battery->pdata->full_condition_vcell)
+			if (battery->capacity >= 100)
 				battery->status = POWER_SUPPLY_STATUS_FULL;
 			battery->charging_mode = SEC_BATTERY_CHARGING_NONE;
 			battery->is_recharging = false;
@@ -1184,8 +1183,7 @@ static bool sec_bat_time_management(
 				"%s: Charging Timer Expired\n", __func__);
 			if (battery->pdata->full_condition_type &
 				SEC_BATTERY_FULL_CONDITION_NOTIMEFULL) {
-				if (battery->voltage_now >
-					battery->pdata->full_condition_vcell)
+				if (battery->capacity >= 100)
 					battery->status =
 						POWER_SUPPLY_STATUS_FULL;
 			} else
@@ -1880,7 +1878,9 @@ static void sec_bat_cable_work(struct work_struct *work)
 	queue_delayed_work(battery->monitor_wqueue, &battery->monitor_work,
 					msecs_to_jiffies(500));
 end_of_cable_work:
-	wake_unlock(&battery->cable_wake_lock);
+	if(battery->cable_type == POWER_SUPPLY_TYPE_BATTERY)
+		wake_unlock(&battery->cable_wake_lock);
+
 	dev_dbg(battery->dev, "%s: End\n", __func__);
 }
 

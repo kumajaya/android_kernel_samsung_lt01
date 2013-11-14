@@ -176,7 +176,7 @@ static int omap_wdt_release(struct inode *inode, struct file *file)
 	/*
 	 *      Shut off the timer unless NOWAYOUT is defined.
 	 */
-#ifndef CONFIG_OMDOG_NOWAYOUT
+#ifndef CONFIG_WATCHDOG_NOWAYOUT
 	pm_runtime_get_sync(wdev->dev);
 
 	omap_wdt_disable(wdev);

@@ -321,11 +321,13 @@ static int tab3_bias1_event(struct snd_soc_dapm_widget *w,
 			     struct snd_kcontrol *kcontrol, int event)
 {
 	struct snd_soc_codec *codec = w->codec;
-	int reg = 0;
 
-	reg = snd_soc_read(codec, WM8994_POWER_MANAGEMENT_1);
-	if (reg & WM8994_MICB2_ENA_MASK)
-		return 0;
+	if (aif2_mode == 1) {
+		int reg = 0;
+		reg = snd_soc_read(codec, WM8994_POWER_MANAGEMENT_1);
+		if (reg & WM8994_MICB2_ENA_MASK)
+			return 0;
+	}
 
 	switch (event) {
 	case SND_SOC_DAPM_POST_PMU:

@@ -106,7 +106,7 @@ void check_jig_status(int status)
 
 static bool sec_bat_check_jig_status(void)
 {
-	return (current_cable_type == POWER_SUPPLY_TYPE_UARTOFF);
+	return is_jig_attached == 1 ? true : false;
 }
 
 static bool isInitial = true;

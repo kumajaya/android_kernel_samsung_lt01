@@ -24,7 +24,7 @@
  *					temperature warning
  *					Add WDIOC_GETBOOTSTATUS and
  *					WDIOC_SETOPTIONS ioctls
- *					Fix CONFIG_OMDOG_NOWAYOUT
+ *					Fix CONFIG_WATCHDOG_NOWAYOUT
  *	20020530 Joel Becker		Add Matt Domsch's nowayout module
  *					option
  *	20030116 Adam Belay		Updated to the latest pnp code

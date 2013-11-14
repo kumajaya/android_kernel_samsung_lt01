@@ -616,7 +616,7 @@ endchoice
 endmenu
 
 config MOTOR_IR_FILTER
-	bool "IR FILTER MOTOR)"
+	bool "IR FILTER MOTOR"
 	default n
 
 config BUSFREQ_DEBUG

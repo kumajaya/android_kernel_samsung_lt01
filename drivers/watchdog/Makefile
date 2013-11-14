@@ -135,7 +135,7 @@ obj-$(CONFIG_PIKA_WDT) += pika_wdt.o
 obj-$(CONFIG_BOOKE_WDT) += booke_wdt.o
 
 # PPC64 Architecture
-obj-$(CONFIG_OMDOG_RTAS) += wdrtas.o
+obj-$(CONFIG_WATCHDOG_RTAS) += wdrtas.o
 
 # S390 Architecture
 
@@ -146,8 +146,8 @@ obj-$(CONFIG_SH_WDT) += shwdt.o
 
 # SPARC64 Architecture
 
-obj-$(CONFIG_OMDOG_RIO)		+= riowd.o
-obj-$(CONFIG_OMDOG_CP1XXX)		+= cpwd.o
+obj-$(CONFIG_WATCHDOG_RIO)		+= riowd.o
+obj-$(CONFIG_WATCHDOG_CP1XXX)		+= cpwd.o
 
 # XTENSA Architecture
 

@@ -159,7 +159,7 @@ struct s3cfb_extdsp_lcd {
 #include <mach/gd2-power.h>
 #elif defined(CONFIG_MACH_ZEST)
 #include <mach/zest-power.h>
-#elif defined(CONFIG_MCAH_OM)
+#elif defined(CONFIG_MACH_OM)
 #include <mach/watch-power.h>
 #elif defined(CONFIG_MACH_GC2PD)
 #include <mach/gc2pd-power.h>
@@ -212,7 +212,7 @@ bool is_cable_attached;
 extern void barcode_fpga_firmware_update(void);
 #endif
 
-#if defined(CONFIG_MCAH_OM)
+#if defined(CONFIG_MACH_OM)
 void __init exynos_watch_charger_init(void);
 #endif
 
@@ -418,7 +418,7 @@ static void touchkey_init_hw(void)
 	defined(CONFIG_MACH_SUPERIOR_KOR_SKT) || \
 	defined(CONFIG_MACH_GD2) || \
 	defined(CONFIG_MACH_ZEST) || \
-	defined(CONFIG_MCAH_OM) 
+	defined(CONFIG_MACH_OM) 
 
 #if defined(CONFIG_MACH_M3_JPN_DCM)
 	if (system_rev < 3)
@@ -1914,7 +1914,7 @@ static struct i2c_board_info i2c_devs7[] __initdata = {
 	defined(CONFIG_MACH_BAFFIN) || \
 	defined(CONFIG_MACH_GD2) || defined(CONFIG_MACH_ZEST) || \
 	defined(CONFIG_MACH_OM)  || defined(CONFIG_MACH_GC2PD) || \
-	defined(CONFIG_MCAH_OM) 
+	defined(CONFIG_MACH_OM) 
 #if defined(CONFIG_REGULATOR_MAX77686) /* max77686 on i2c7 with M1 board */
 	{
 		I2C_BOARD_INFO("max77686", (0x12 >> 1)),
@@ -2002,7 +2002,7 @@ static struct i2c_board_info i2c_devs11_emul[] __initdata = {
 #if defined(CONFIG_MACH_M3) || defined(CONFIG_MACH_M0)\
 	|| defined(CONFIG_MACH_T0) || \
 	defined(CONFIG_MACH_ZEST) || defined(CONFIG_MACH_GC2PD)\
-	|| defined(CONFIG_MCAH_OM) 
+	|| defined(CONFIG_MACH_OM) 
 static struct i2c_board_info i2c_devs12_emul[] __initdata = {
 };
 #endif
@@ -2752,7 +2752,7 @@ struct gpio_keys_button midas_buttons[] = {
 		  1, 1, sec_debug_check_crash_key),
 	GPIO_KEYS(KEY_HOMEPAGE, GPIO_OK_KEY_ANDROID,
 		  1, 1, sec_debug_check_crash_key),
-#elif defined(CONFIG_MCAH_OM)
+#elif defined(CONFIG_MACH_OM)
 	/* NOTICE: if nPOWER's key code is changed,
 	 *         sec_debug.c should be also modifed.
 	 */
@@ -3246,7 +3246,7 @@ static struct platform_device s3c_device_i2c11 = {
 #if defined(CONFIG_MACH_M3) || defined(CONFIG_MACH_M0)\
 	|| defined(CONFIG_MACH_T0) || \
 	defined(CONFIG_MACH_ZEST) || defined(CONFIG_MACH_GC2PD) \
-	|| defined(CONFIG_MCAH_OM) 
+	|| defined(CONFIG_MACH_OM) 
 static struct i2c_gpio_platform_data i2c12_platdata = {
 	.sda_pin		= GPIO_NFC_SDA_18V,
 	.scl_pin		= GPIO_NFC_SCL_18V,
@@ -3898,7 +3898,7 @@ static void __init exynos4_reserve_mem(void)
 			.start = 0x5e800000,
 #elif defined(CONFIG_MACH_GD2)
 			.start = 0x5d700000,
-#elif defined(CONFIG_MCAH_OM)
+#elif defined(CONFIG_MACH_OM)
 #else
 			.start = 0x65c00000,
 #endif
@@ -3944,7 +3944,7 @@ static void __init exynos4_reserve_mem(void)
 			.start = 0x5B000000,
 #elif defined(CONFIG_MACH_ZEST)
 			.start = 0x60800000,
-#elif defined(CONFIG_MCAH_OM)
+#elif defined(CONFIG_MACH_OM)
 #else
 			.start = 0x64000000,
 #endif
@@ -3982,7 +3982,7 @@ static void __init exynos4_reserve_mem(void)
 		},
 #else /*defined(CONFIG_DMA_CMA)*/
 #if defined(CONFIG_USE_MFC_CMA)
-#if defined(CONFIG_MACH_M0) || defined(CONFIG_MACH_ZEST) || defined(CONFIG_MCAH_OM)
+#if defined(CONFIG_MACH_M0) || defined(CONFIG_MACH_ZEST) || defined(CONFIG_MACH_OM)
 #ifdef CONFIG_ION_EXYNOS_CONTIGHEAP_SIZE
 		{
 			.name = "ion",
@@ -4523,7 +4523,7 @@ static void __init midas_machine_init(void)
 #if defined(CONFIG_MACH_M3) || defined(CONFIG_MACH_M0)\
 	|| defined(CONFIG_MACH_T0) || \
 	defined(CONFIG_MACH_ZEST) || defined(CONFIG_MACH_GC2PD) \
-	|| defined(CONFIG_MCAH_OM) 
+	|| defined(CONFIG_MACH_OM) 
 	i2c_register_board_info(12, i2c_devs12_emul,
 				ARRAY_SIZE(i2c_devs12_emul));
 #endif
@@ -4535,7 +4535,7 @@ static void __init midas_machine_init(void)
 				ARRAY_SIZE(i2c_devs14_emul));
 #endif
 
-#if defined(CONFIG_MCAH_OM)
+#if defined(CONFIG_MACH_OM)
 	exynos_watch_charger_init();
 #endif
 
@@ -4909,7 +4909,7 @@ static void __init midas_machine_init(void)
 #if defined(CONFIG_MACH_M3) || defined(CONFIG_MACH_M0)\
 	|| defined(CONFIG_MACH_T0) || \
 	defined(CONFIG_MACH_ZEST) || defined(CONFIG_MACH_GC2PD) \
-	|| defined(CONFIG_MCAH_OM)
+	|| defined(CONFIG_MACH_OM)
 	platform_device_register(&s3c_device_i2c12);
 #endif
 #endif
@@ -5112,7 +5112,7 @@ static void __init exynos4_reserve(void)
 #endif
 
 #if defined(CONFIG_USE_MFC_CMA)
-#if defined(CONFIG_MACH_M0) || defined(CONFIG_MCAH_OM)
+#if defined(CONFIG_MACH_M0) || defined(CONFIG_MACH_OM)
 	ret = dma_declare_contiguous(&s5p_device_mfc.dev,
 			0x02800000, 0x5C800000, 0);
 #elif defined(CONFIG_MACH_ZEST)

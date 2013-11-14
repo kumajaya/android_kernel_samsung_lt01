@@ -30,7 +30,7 @@
  *
  * Version 0.5 (2001/12/14) Matt Domsch <Matt_Domsch@dell.com>
  *		- added nowayout module option to override
- *		  CONFIG_OMDOG_NOWAYOUT
+ *		  CONFIG_WATCHDOG_NOWAYOUT
  *
  * Version 0.6 (2002/04/12): Rob Radez <rob@osinvestor.com>
  *		- make mixcomwd_opened unsigned,

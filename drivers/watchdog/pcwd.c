@@ -41,7 +41,7 @@
  * 990610	removed said useless proc code for the merge <alan>
  * 000403	Removed last traces of proc code. <davej>
  * 011214	Added nowayout module option to override
- *		CONFIG_OMDOG_NOWAYOUT <Matt_Domsch@dell.com>
+ *		CONFIG_WATCHDOG_NOWAYOUT <Matt_Domsch@dell.com>
  *		Added timeout module option to override default
  */
 

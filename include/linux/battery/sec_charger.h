@@ -45,6 +45,8 @@
 #include <linux/battery/charger/tsu8111_charger.h>
 #elif defined(CONFIG_CHARGER_MAX77693)
 #include <linux/battery/charger/max77693_charger.h>
+#elif defined(CONFIG_CHARGER_MAX77693_BAT)
+#include <linux/battery/charger/max77693_charger_bat.h>
 #endif
 
 struct sec_charger_info {

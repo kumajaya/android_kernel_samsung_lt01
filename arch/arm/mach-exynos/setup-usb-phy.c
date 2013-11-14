@@ -1011,6 +1011,9 @@ int exynos4_check_usb_op(void)
 	int ret;
 
 #if defined(CONFIG_MDM_HSIC_PM)
+	if (set_hsic_lpa_states(STATE_HSIC_LPA_ENABLE))
+		return 1;
+
 	/* if it is normal boot, block lpa till modem boot */
 	if (set_hsic_lpa_states(STATE_HSIC_LPA_CHECK))
 		return 1;

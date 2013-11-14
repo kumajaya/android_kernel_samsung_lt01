@@ -118,7 +118,7 @@ configuration of the watchdog is not touched.  This is useful in two cases:
 - do not touch a configuration assigned by the boot loader which supervises
   the boot process itself.
 
-The watchdog will respect the CONFIG_OMDOG_NOWAYOUT option.
+The watchdog will respect the CONFIG_WATCHDOG_NOWAYOUT option.
 
 An mpc5200-gpt can be used as a single line GPIO controller.  To do so,
 add the following properties to the gpt node:

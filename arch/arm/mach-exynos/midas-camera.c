@@ -957,7 +957,7 @@ static int s5k6a3_power_down(void)
 
 	return ret;
 }
-#elif defined(CONFIG_MCAH_OM)
+#elif defined(CONFIG_MACH_OM)
 static int s5k6a3_power_on(void)
 {
 	struct regulator *regulator;
@@ -1252,7 +1252,7 @@ error_out:
 static const char *s5k6a3_get_clk_name(void)
 {
 #if defined(CONFIG_MACH_P4NOTE) || defined(CONFIG_MACH_SP7160LTE) || defined(CONFIG_MACH_T0) || \
-	defined(CONFIG_MACH_M3) || defined(CONFIG_MACH_SLP_T0_LTE) || defined(CONFIG_MCAH_OM)
+	defined(CONFIG_MACH_M3) || defined(CONFIG_MACH_SLP_T0_LTE) || defined(CONFIG_MACH_OM)
 	return "sclk_cam1";
 #else
 	if (system_rev < FRONT_CAM_MCLK_DEVIDED_REVISION)

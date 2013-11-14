@@ -176,7 +176,6 @@ config SND_SOC_SLP_TRATS_MC1N2
 	  Samsung Exynos-4210 audio subsystem
 	  and Yamaha MC1N2 codec.
 
-
 config SND_USE_YMU831_LDODE_GPIO
 	bool "Use YMU831_LDODE_GPIO"
 	depends on SND_SOC_SAMSUNG && SND_SOC_YAMAHA_YMU831

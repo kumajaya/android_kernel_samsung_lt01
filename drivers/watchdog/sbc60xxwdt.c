@@ -20,7 +20,7 @@
  *					on success
  *           12/4 - 2002      [rob@osinvestor.com] eliminate fop_read
  *                            fix possible wdt_is_open race
- *                            add CONFIG_OMDOG_NOWAYOUT support
+ *                            add CONFIG_WATCHDOG_NOWAYOUT support
  *                            remove lock_kernel/unlock_kernel pairs
  *                            added KERN_* to printk's
  *                            got rid of extraneous comments

@@ -31,5 +31,4 @@ endif
 
 obj-$(CONFIG_VIDEO_TSI)		+= tsi/
 
-
 EXTRA_CFLAGS += -Idrivers/media/video

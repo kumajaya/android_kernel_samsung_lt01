@@ -264,7 +264,13 @@ $(warning '$(TSPFIRMWARE_DIRECTORY)' directory dose not exist)
 endif
 
 TSPFIRMWARE_DIRECTORY_MEL_GD2 = $(srctree)/firmware/tsp_melfas/gd2
-ifeq ($(shell test -d $(TSPFIRMWARE_DIRECTORY_MEL_OM) && echo yes),yes)
+ifeq ($(shell test -d $(TSPFIRMWARE_DIRECTORY_MEL_GD2) && echo yes),yes)
+fw-shipped-$(CONFIG_TOUCHSCREEN_MELFAS_GD2) += tsp_melfas/gd2/melfas.fw
+fw-shipped-$(CONFIG_TOUCHSCREEN_MELFAS_GD2) += tsp_melfas/gd2/BOOT.fw
+fw-shipped-$(CONFIG_TOUCHSCREEN_MELFAS_GD2) += tsp_melfas/gd2/CORE.fw
+fw-shipped-$(CONFIG_TOUCHSCREEN_MELFAS_GD2) += tsp_melfas/gd2/CONF.fw
+else
+$(warning '$(TSPFIRMWARE_DIRECTORY)' directory dose not exist)
 endif
 
 fw-shipped-$(CONFIG_AUDIENCE_ES305) += audience/es305_fw.bin

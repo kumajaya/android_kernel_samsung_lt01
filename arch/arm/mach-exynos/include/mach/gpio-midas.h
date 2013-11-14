@@ -68,9 +68,9 @@
 #include "gpio-rev00-ipcam.h"
 #elif defined(CONFIG_MACH_GC2PD)
 #include "gpio-rev00-gc2pd.h"
-#elif defined(CONFIG_MCAH_OM) && defined(CONFIG_OM_00_BD)
+#elif defined(CONFIG_MACH_OM) && defined(CONFIG_OM_00_BD)
 #include "gpio-rev00-watch.h"
-#elif defined(CONFIG_MCAH_OM) && defined(CONFIG_OM_01_BD)
+#elif defined(CONFIG_MACH_OM) && defined(CONFIG_OM_01_BD)
 #include "gpio-rev01-watch.h"
 #endif
 

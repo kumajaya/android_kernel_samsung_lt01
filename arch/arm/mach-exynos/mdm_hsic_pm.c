@@ -509,6 +509,8 @@ int check_udev_suspend_allowed(const char *name)
 
 int set_hsic_lpa_states(int states)
 {
+	struct mdm_hsic_pm_data *pm_data =
+				get_pm_data_by_dev_name("mdm_hsic_pm0");
 	/* if modem need to check survive, get status in variable */
 	int val = 1;
 	int ret = 0;
@@ -540,6 +542,13 @@ int set_hsic_lpa_states(int states)
 					return 1;
 				else
 					return 0;
+		case STATE_HSIC_LPA_ENABLE:
+			if (lpcharge)
+				return 0;
+			else if (pm_data)
+				return pm_data->shutdown;
+			else
+				return 1;
 		default:
 			pr_info("unknown lpa state\n");
 			break;

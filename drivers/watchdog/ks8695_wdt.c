@@ -34,7 +34,7 @@ module_param(wdt_time, int, 0);
 MODULE_PARM_DESC(wdt_time, "Watchdog time in seconds. (default="
 					__MODULE_STRING(WDT_DEFAULT_TIME) ")");
 
-#ifdef CONFIG_OMDOG_NOWAYOUT
+#ifdef CONFIG_WATCHDOG_NOWAYOUT
 module_param(nowayout, int, 0);
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -133,7 +133,7 @@ static int ks8695_wdt_open(struct inode *inode, struct file *file)
 
 /*
  * Close the watchdog device.
- * If CONFIG_OMDOG_NOWAYOUT is NOT defined then the watchdog is also
+ * If CONFIG_WATCHDOG_NOWAYOUT is NOT defined then the watchdog is also
  *  disabled.
  */
 static int ks8695_wdt_close(struct inode *inode, struct file *file)

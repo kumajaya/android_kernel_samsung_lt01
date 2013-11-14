@@ -94,6 +94,7 @@ obj-$(CONFIG_TOUCHSCREEN_ATMEL_MXTS)       += mxts.o
 obj-$(CONFIG_TOUCHSCREEN_CYPRESS_TMA46X)	+= cyttsp4_core.o cyttsp4_i2c.o cyttsp4_bus.o cyttsp4_mtb.o cyttsp4_mt_common.o cyttsp4_btn.o cyttsp4_device_access.o cyttsp4_loader.o cyttsp4_debug.o
 obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_I2C_RMI)	+= synaptics_i2c_rmi.o rmi_dev.o rmi_f34.o
 obj-$(CONFIG_TOUCHSCREEN_ATMEL_MXT1188S)       += mxt1188s.o
+obj-$(CONFIG_TOUCHSCREEN_MELFAS_GD2)	+= mms_ts_gd2.o
 ifeq ($(TARGET_BUILD_VARIANT), eng)
 KBUILD_CFLAGS		+= -DSEC_TSP_EVENT_DEBUG
 endif

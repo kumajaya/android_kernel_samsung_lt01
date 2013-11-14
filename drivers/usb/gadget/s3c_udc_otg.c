@@ -417,7 +417,7 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 
 #else
 	printk(KERN_INFO "usb: udc_enable\n");
-#ifndef CONFIG_MCAH_OM
+#ifndef CONFIG_MACH_OM
 	udc_enable(dev);
 #endif
 	dev->udc_enabled = 1;

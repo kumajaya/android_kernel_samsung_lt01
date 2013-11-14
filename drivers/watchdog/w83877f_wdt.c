@@ -21,7 +21,7 @@
  *                            Eliminate fop_read
  *                            Eliminate extra spin_unlock
  *                            Added KERN_* tags to printks
- *                            add CONFIG_OMDOG_NOWAYOUT support
+ *                            add CONFIG_WATCHDOG_NOWAYOUT support
  *                            fix possible wdt_is_open race
  *                            changed watchdog_info to correctly reflect what
  *			      the driver offers

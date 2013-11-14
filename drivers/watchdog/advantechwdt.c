@@ -21,7 +21,7 @@
  *	(c) Copyright 1995    Alan Cox <alan@lxorguk.ukuu.org.uk>
  *
  *	14-Dec-2001 Matt Domsch <Matt_Domsch@dell.com>
- *	    Added nowayout module option to override CONFIG_OMDOG_NOWAYOUT
+ *	    Added nowayout module option to override CONFIG_WATCHDOG_NOWAYOUT
  *
  *	16-Oct-2002 Rob Radez <rob@osinvestor.com>
  *	    Clean up ioctls, clean up init + exit, add expect close support,

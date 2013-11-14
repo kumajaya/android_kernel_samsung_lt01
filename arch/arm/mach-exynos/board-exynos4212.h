@@ -31,6 +31,7 @@ void exynos4_exynos4212_muic_init(void);
 extern sec_battery_platform_data_t sec_battery_pdata;
 extern unsigned int lpcharge;
 extern int current_cable_type;
+extern bool is_jig_attached;
 #endif
 
 #endif

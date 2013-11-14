@@ -98,7 +98,7 @@ static const char * const lcd_regulator_arr[] = {
 	"vcc_3.0v_lcd",
 #elif defined(CONFIG_FB_S5P_NT71391) || defined(CONFIG_FB_S5P_S6D7AA0)
 	/* Regulator empty*/
-#elif defined(CONFIG_MCAH_OM)
+#elif defined(CONFIG_MACH_OM)
 	"vcc_3.3v_lcd",
 #else
 	"vlcd_3.3v",
@@ -165,7 +165,7 @@ static struct s3cfb_lcd lcd_panel_pdata = {
 	.width = 800,
 	.p_width = 64,
 	.p_height = 106,
-#elif 0 /*defined(CONFIG_MCAH_OM)*/
+#elif 0 /*defined(CONFIG_MACH_OM)*/
 	.height = 320,
 	.width = 320,
 	.p_width = 29,		/* 29.28 mm */

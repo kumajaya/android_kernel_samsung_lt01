@@ -623,7 +623,7 @@ static void exynos4_pm_resume(void)
 
 	CHECK_POINT;
 
-	if ((__raw_readl(S5P_WAKEUP_STAT) == 0) && soc_is_exynos4412()) {
+	if ((__raw_readl(S5P_WAKEUP_STAT) == 0) && (soc_is_exynos4212() || soc_is_exynos4412())) {
 		__raw_writel(__raw_readl(S5P_EINT_PEND(0)), S5P_EINT_PEND(0));
 		__raw_writel(__raw_readl(S5P_EINT_PEND(1)), S5P_EINT_PEND(1));
 		__raw_writel(__raw_readl(S5P_EINT_PEND(2)), S5P_EINT_PEND(2));

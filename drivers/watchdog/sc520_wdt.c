@@ -26,7 +26,7 @@
  *	4/12 - 2002 Changes by Rob Radez <rob@osinvestor.com>
  *	-	Change comments
  *	-	Eliminate fop_llseek
- *	-	Change CONFIG_OMDOG_NOWAYOUT semantics
+ *	-	Change CONFIG_WATCHDOG_NOWAYOUT semantics
  *	-	Add KERN_* tags to printks
  *	-	fix possible wdt_is_open race
  *	-	Report proper capabilities in watchdog_info

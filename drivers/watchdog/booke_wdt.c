@@ -231,11 +231,11 @@ static int booke_wdt_open(struct inode *inode, struct file *file)
 
 static int booke_wdt_release(struct inode *inode, struct file *file)
 {
-#ifndef CONFIG_OMDOG_NOWAYOUT
+#ifndef CONFIG_WATCHDOG_NOWAYOUT
 	/* Normally, the watchdog is disabled when /dev/watchdog is closed, but
-	 * if CONFIG_OMDOG_NOWAYOUT is defined, then it means that the
+	 * if CONFIG_WATCHDOG_NOWAYOUT is defined, then it means that the
 	 * watchdog should remain enabled.  So we disable it only if
-	 * CONFIG_OMDOG_NOWAYOUT is not defined.
+	 * CONFIG_WATCHDOG_NOWAYOUT is not defined.
 	 */
 	on_each_cpu(__booke_wdt_disable, NULL, 0);
 	booke_wdt_enabled = 0;

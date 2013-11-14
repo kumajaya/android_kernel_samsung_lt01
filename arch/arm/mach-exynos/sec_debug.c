@@ -763,7 +763,7 @@ void sec_debug_check_crash_key(unsigned int code, int value)
 	pr_info("Check Forced Crash: %s (%d)\n",
 			code == KEY_POWER ? "PWR": "VOL/OTHER", value);
 
-#if defined(CONFIG_MCAH_OM) || defined(CONFIG_MACH_OM)
+#if defined(CONFIG_MACH_OM) || defined(CONFIG_MACH_OM)
 	/* Using ONE KEY UPLOAD */
 	sec_debug_one_key_crash(code, value);
 #endif
@@ -779,7 +779,7 @@ void sec_debug_check_crash_key(unsigned int code, int value)
 		if (code == VOLUME_DOWN)
 			voldown_p = true;
 		if (!volup_p && voldown_p) {
-#if defined(CONFIG_MCAH_OM)
+#if defined(CONFIG_MACH_OM)
 			/* Remove this. */
 			if (code == KEY_HOMEPAGE) {
 #else

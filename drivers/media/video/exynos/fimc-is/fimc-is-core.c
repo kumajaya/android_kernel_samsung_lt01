@@ -266,7 +266,7 @@ static ssize_t s5k6a3_camera_camfw_show(struct device *dev,
 
 }
 
-#ifdef CONFIG_MCAH_OM
+#ifdef CONFIG_MACH_OM
 static DEVICE_ATTR(rear_camtype, S_IRUGO,
 		s5k6a3_camera_camtype_show, NULL);
 static DEVICE_ATTR(rear_camfw, S_IRUGO, s5k6a3_camera_camfw_show, NULL);
@@ -548,7 +548,7 @@ static int fimc_is_probe(struct platform_device *pdev)
 				dev_attr_rear_camfw.attr.name);
 		}
 	}
-#elif defined(CONFIG_MCAH_OM)
+#elif defined(CONFIG_MACH_OM)
 	rear_dev = device_create(camera_class, NULL, 0, NULL, "rear");
 	if (IS_ERR(rear_dev)) {
 		printk(KERN_ERR "failed to create device!\n");

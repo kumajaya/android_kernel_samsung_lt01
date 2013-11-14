@@ -47,7 +47,7 @@ Close" feature is supported (see below).  This is not always such a
 good idea, since if there is a bug in the watchdog daemon and it
 crashes the system will not reboot.  Because of this, some of the
 drivers support the configuration option "Disable watchdog shutdown on
-close", CONFIG_OMDOG_NOWAYOUT.  If it is set to Y when compiling
+close", CONFIG_WATCHDOG_NOWAYOUT.  If it is set to Y when compiling
 the kernel, there is no way of disabling the watchdog once it has been
 started.  So, if the watchdog daemon crashes, the system will reboot
 after the timeout has passed. Watchdog devices also usually support

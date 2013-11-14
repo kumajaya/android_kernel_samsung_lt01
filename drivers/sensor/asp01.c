@@ -179,7 +179,6 @@ struct asp01_data {
 	bool is_first_close;
 	bool skip_data;
 	bool shutdown;
-	int cal_result;
 };
 
 static int asp01_grip_enable(struct asp01_data *data)
@@ -366,7 +365,7 @@ static int asp01_init_code_set(struct asp01_data *data)
 		pr_debug("%s: reg: %x, data: %x\n", __func__,
 			init_reg[i][REG], init_reg[i][CMD]);
 	}
-
+	msleep(500);
 	/* check if the device is working */
 	reg = i2c_smbus_read_byte_data(data->client,
 		0x10);
@@ -384,8 +383,7 @@ static int asp01_init_code_set(struct asp01_data *data)
 
 	/* disable initial touch mode */
 	asp01_init_touch_onoff(data, false);
-	msleep(100);
-
+	msleep(200);
 done:
 	return err;
 }
@@ -484,7 +482,7 @@ static void asp01_open_calibration(struct asp01_data *data)
 				__func__, err);
 			return;
 		}
-		msleep(1000);
+		msleep(500);
 
 		/* If MFM is not calibrated, count will be zero. */
 		err = asp01_init_code_set(data);
@@ -564,6 +562,7 @@ static int asp01_do_calibrate(struct asp01_data *data, bool do_calib)
 						__func__);
 			} while (count--);
 
+			usleep_range(20000, 21000);
 			/* 4. read each CR CS ref value */
 			err = i2c_smbus_write_byte_data(data->client,
 					control_reg[CMD_CLK_OFF][REG],
@@ -959,8 +958,6 @@ static ssize_t asp01_calibration_show(struct device *dev,
 	/* If MFM is not calibrated, count will be zero. */
 	if (count)
 		success = 1;
-	if (data->cal_result == ASP01_DEV_WORKING)
-		success = -2;
 
 	cs_per_2nd = data->cal_data[MFM_DATA_NUM + 1] << 8 |\
 		data->cal_data[MFM_DATA_NUM];
@@ -991,9 +988,27 @@ static ssize_t asp01_calibration_store(struct device *dev,
 	}
 
 	pr_info("%s, do_calib = %d\n", __func__, do_calib);
+#if defined(CONFIG_TARGET_TAB3_LTE8) || defined(CONFIG_TARGET_TAB3_3G8)
+	if (do_calib) {
+		pr_info("%s, reset before calibration start\n", __func__);
+		asp01_restore_from_eeprom(data);
+
+		err = asp01_reset(data);
+		if (err) {
+			pr_err("%s: asp01_reset, err = %d\n",
+				__func__, err);
+		}
+		msleep(500);
+
+		err = asp01_init_code_set(data);
+		if (err < ASP01_DEV_WORKING)
+			pr_err("%s: asp01_init_code_set, err = %d\n",
+				__func__, err);
+		pr_info("%s, reset before calibration done\n", __func__);
+	}
+#endif
 	mutex_lock(&data->data_mutex);
 
-	data->cal_result = 0;
 	asp01_grip_enable(data);
 	msleep(1000);
 
@@ -1010,7 +1025,6 @@ static ssize_t asp01_calibration_store(struct device *dev,
 			pr_info("%s, asp01 is working. cal erase fail\n",
 				__func__);
 		err = ASP01_DEV_WORKING;
-		data->cal_result = ASP01_DEV_WORKING;
 		goto exit;
 	}
 
@@ -1021,7 +1035,7 @@ static ssize_t asp01_calibration_store(struct device *dev,
 		pr_err("%s, asp01_reset fail(%d)\n", __func__, err);
 		goto exit;
 	}
-	msleep(1000);
+	msleep(500);
 
 	err = asp01_init_code_set(data);
 	if (err < ASP01_DEV_WORKING) {
@@ -1317,9 +1331,13 @@ static ssize_t asp01_grip_onoff_store(struct device *dev,
 
 	if (sysfs_streq(buf, "1"))
 		data->skip_data = false;
-	else if (sysfs_streq(buf, "0"))
+	else if (sysfs_streq(buf, "0")) {
+		input_report_rel(data->input, REL_MISC, GRIP_FAR);
+		input_sync(data->input);
 		data->skip_data = true;
-	else {
+		pr_info("%s: onoff = 0, input report as GRIP_FAR\n",
+			__func__);
+	} else {
 		pr_info("%s: invalid value %d\n", __func__, *buf);
 		return -EINVAL;
 	}
@@ -1356,10 +1374,9 @@ static ssize_t asp01_grip_reset_store(struct device *dev,
 			pr_err("%s: asp01_reset, err = %d\n",
 				__func__, err);
 		}
-		msleep(1000);
+		msleep(500);
 
 		err = asp01_init_code_set(data);
-		msleep(100);
 		if (err < ASP01_DEV_WORKING)
 			pr_err("%s: asp01_init_code_set, err = %d\n",
 				__func__, err);

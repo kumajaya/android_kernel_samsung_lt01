@@ -605,7 +605,7 @@ soon as the driver is loaded.
 
 If nowayout is set to 1, the watchdog timer will not stop when the
 watchdog device is closed.  The default value of nowayout is true
-if the CONFIG_OMDOG_NOWAYOUT option is enabled, or false if not.
+if the CONFIG_WATCHDOG_NOWAYOUT option is enabled, or false if not.
 
 When compiled into the kernel, the kernel command line is available
 for configuring the watchdog:

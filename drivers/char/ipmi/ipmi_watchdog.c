@@ -319,7 +319,7 @@ MODULE_PARM_DESC(start_now, "Set to 1 to start the watchdog as"
 
 module_param(nowayout, int, 0644);
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started "
-		 "(default=CONFIG_OMDOG_NOWAYOUT)");
+		 "(default=CONFIG_WATCHDOG_NOWAYOUT)");
 
 /* Default state of the timer. */
 static unsigned char ipmi_watchdog_state = WDOG_TIMEOUT_NONE;

@@ -86,7 +86,7 @@ obj-$(CONFIG_POWER_SUPPLY)	+= battery/
 obj-$(CONFIG_POWER_SUPPLY)	+= power/
 obj-$(CONFIG_HWMON)		+= hwmon/
 obj-$(CONFIG_THERMAL)		+= thermal/
-obj-$(CONFIG_OMDOG)		+= watchdog/
+obj-$(CONFIG_WATCHDOG)		+= watchdog/
 obj-$(CONFIG_PHONE)		+= telephony/
 obj-$(CONFIG_MD)		+= md/
 ifeq ($(CONFIG_BT_TIZEN),y)

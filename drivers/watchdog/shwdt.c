@@ -11,7 +11,7 @@
  * option) any later version.
  *
  * 14-Dec-2001 Matt Domsch <Matt_Domsch@dell.com>
- *     Added nowayout module option to override CONFIG_OMDOG_NOWAYOUT
+ *     Added nowayout module option to override CONFIG_WATCHDOG_NOWAYOUT
  *
  * 19-Apr-2002 Rob Radez <rob@osinvestor.com>
  *     Added expect close support, made emulated timeout runtime changeable

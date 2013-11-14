@@ -53,7 +53,7 @@ struct watchdog_info {
 
 #ifdef __KERNEL__
 
-#ifdef CONFIG_OMDOG_NOWAYOUT
+#ifdef CONFIG_WATCHDOG_NOWAYOUT
 #define WATCHDOG_NOWAYOUT	1
 #else
 #define WATCHDOG_NOWAYOUT	0

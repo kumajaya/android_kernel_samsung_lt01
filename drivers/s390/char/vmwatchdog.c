@@ -42,7 +42,7 @@ MODULE_PARM_DESC(conceal, "Enable the CONCEAL CP option while the watchdog "
 		" is active");
 module_param_named(nowayout, vmwdt_nowayout, bool, 0);
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started"
-		" (default=CONFIG_OMDOG_NOWAYOUT)");
+		" (default=CONFIG_WATCHDOG_NOWAYOUT)");
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
 
 static unsigned int vmwdt_interval = 60;

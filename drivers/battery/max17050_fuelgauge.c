@@ -2050,8 +2050,7 @@ static int get_fuelgauge_soc(struct i2c_client *client)
 
 	/*  Checks vcell level and tries to compensate SOC if needed.*/
 	/*  If jig cable is connected, then skip low batt compensation check. */
-	if (!fuelgauge->pdata->check_jig_status() &&
-		value.intval == POWER_SUPPLY_STATUS_DISCHARGING)
+	if (value.intval == POWER_SUPPLY_STATUS_DISCHARGING)
 		fg_soc = low_batt_compensation(
 			client, fg_soc, fg_vcell, fg_current);
 
@@ -2201,6 +2200,10 @@ bool sec_hal_fg_fuelalert_process(void *irq_data, bool is_fuel_alerted)
 	int overcurrent_limit_in_soc;
 	int current_soc =
 		get_fuelgauge_value(fuelgauge->client, FG_LEVEL);
+	int current_vcell =
+		get_fuelgauge_value(fuelgauge->client, FG_VOLTAGE);
+	int read_val;
+	int new_soc;
 
 	if (fuelgauge->info.soc <= STABLE_LOW_BATTERY_DIFF)
 		overcurrent_limit_in_soc = STABLE_LOW_BATTERY_DIFF_LOWBATT;
@@ -2228,12 +2231,25 @@ bool sec_hal_fg_fuelalert_process(void *irq_data, bool is_fuel_alerted)
 
 	if (value.intval ==
 			POWER_SUPPLY_STATUS_DISCHARGING) {
-		dev_err(&fuelgauge->client->dev,
-			"Set battery level as 0, power off.\n");
-		fuelgauge->info.soc = 0;
-		value.intval = 0;
-		psy_do_property("battery", set,
-			POWER_SUPPLY_PROP_CAPACITY, value);
+
+		if (current_vcell >= POWER_OFF_VOLTAGE_HIGH_MARGIN) {
+			read_val = fg_read_register(fuelgauge->client, FULLCAP_REG);
+		        /* FullCAP * 0.013 */
+			fg_write_register(fuelgauge->client, REMCAP_REP_REG,
+	                (u16)(read_val * 13 / 1000));
+        	        msleep(200);
+                	new_soc = fg_read_soc(fuelgauge->client);
+	                dev_info(&fuelgauge->client->dev, "%s soc(%d => %d), vcell=%d\n",
+        	                __func__, current_soc, new_soc, current_vcell);
+		} else {
+			dev_err(&fuelgauge->client->dev,
+				"Set battery level as 0, power off.\n");
+			fuelgauge->info.soc = 0;
+			value.intval = 0;
+			psy_do_property("battery", set,
+				POWER_SUPPLY_PROP_CAPACITY, value);
+		}
+		
 	}
 
 	return true;

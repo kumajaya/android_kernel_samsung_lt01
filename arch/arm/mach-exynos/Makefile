@@ -143,7 +143,7 @@ obj-$(CONFIG_MACH_TAB3)			+= tab3-input.o
 obj-$(CONFIG_MACH_KONA)			+= kona-input.o
 obj-$(CONFIG_MACH_SP7160LTE)		+= sp7160lte-input.o
 
-ifeq ($(CONFIG_MCAH_OM),y)
+ifeq ($(CONFIG_MACH_OM),y)
 obj-$(CONFIG_BATTERY_SAMSUNG_P1X)	+= board-watch-battery.o
 endif
 
@@ -243,10 +243,17 @@ obj-$(CONFIG_TAB3_01_BD)		+= tab3-gpio.o tab3-power.o
 obj-$(CONFIG_KONA_00_BD)		+= kona-gpio.o kona-power.o
 obj-$(CONFIG_KONA_01_BD)		+= kona-01-gpio.o kona-01-power.o
 obj-$(CONFIG_GC1_00_BD)			+= gc1-gpio.o gc1-power.o gc1-jack.o
+obj-$(CONFIG_GC2PD_00_BD)		+= gc2pd-gpio.o gc2pd-power.o
 obj-$(CONFIG_MACH_T0)			+= t0-gpio.o t0-power.o
 obj-$(CONFIG_MACH_BAFFIN)			+= baffin-gpio.o baffin-power.o
 obj-$(CONFIG_HD_00_BD)			+= hd-gpio.o hd-power.o
+obj-$(CONFIG_MACH_GD2)			+= gd2-power.o
+obj-$(CONFIG_GD2_01_BD)			+= gd2-gpio_01.o
+obj-$(CONFIG_ZEST_00_BD)		+= zest-gpio.o zest-power.o
+obj-$(CONFIG_OM_00_BD)		+= watch-gpio.o watch-power.o
+obj-$(CONFIG_OM_01_BD)		+= watch-gpio.o watch-power.o
 obj-$(CONFIG_SP7160LTE_00_BD)		+= sp7160lte-gpio.o sp7160lte-power.o
+obj-$(CONFIG_MACH_OM)		+= ipcam-gpio.o ipcam-power.o
 ifeq ($(CONFIG_MACH_M3),y)
 obj-$(CONFIG_MIDAS_COMMON_BD)		+= m3-gpio.o midas-power.o
 else
@@ -431,6 +438,7 @@ else
 obj-$(CONFIG_SND_SOC_SAMSUNG_GRANDE_WM1811)	+= board-grande-sound.o
 endif
 
+obj-$(CONFIG_SND_SOC_SAMSUNG_OM_YMU831)	+= watch-sound-y.o
 
 # for audio platform data driver
 obj-$(CONFIG_EXYNOS_SOUND_PLATFORM_DATA)	+= exynos_sound_platform_data.o
