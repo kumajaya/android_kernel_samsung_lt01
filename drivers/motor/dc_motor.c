@@ -89,7 +89,9 @@ static void dc_motor_enable(struct timed_output_dev *_dev, int value)
 		container_of(_dev, struct dc_motor_drvdata, dev);
 	unsigned long	flags;
 
+#if 0
 	printk(KERN_DEBUG "[VIB] time = %dms\n", value);
+#endif
 
 	cancel_work_sync(&data->work);
 	hrtimer_cancel(&data->timer);

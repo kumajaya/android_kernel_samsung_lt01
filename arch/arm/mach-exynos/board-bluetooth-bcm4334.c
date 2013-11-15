@@ -41,6 +41,8 @@
 #define BT_UART_CFG
 #define BT_LPM_ENABLE
 
+#define DEBUG_PRINT 0
+
 static struct rfkill *bt_rfkill;
 
 struct bcm_bt_lpm {
@@ -171,7 +173,9 @@ void bcm_bt_lpm_exit_lpm_locked(struct uart_port *uport)
 	bt_is_running = 1;
 	set_wake_locked(1);
 
+#if DEBUG_PRINT
 	pr_info("[BT] bt_lpm_exit_lpm_locked.\n");
+#endif
 	hrtimer_start(&bt_lpm.enter_lpm_timer, bt_lpm.enter_lpm_delay,
 		HRTIMER_MODE_REL);
 }

@@ -2829,7 +2829,9 @@ do {									\
 static int max77693_muic_irq_init(struct max77693_muic_info *info)
 {
 	int ret;
+#if 0
 	u8 val;
+#endif
 
 	dev_info(info->dev, "%s: system_rev=%x\n", __func__, system_rev);
 
@@ -2848,6 +2850,7 @@ static int max77693_muic_irq_init(struct max77693_muic_info *info)
 		info->irq_adc, info->irq_chgtype,
 		info->irq_adc1k, info->irq_vbvolt);
 
+#if 0
 	max77693_read_reg(info->muic, MAX77693_MUIC_REG_INTMASK1, &val);
 	dev_info(info->dev, "%s: reg=%x, val=%x\n", __func__,
 		 MAX77693_MUIC_REG_INTMASK1, val);
@@ -2869,6 +2872,7 @@ static int max77693_muic_irq_init(struct max77693_muic_info *info)
 	max77693_read_reg(info->muic, MAX77693_MUIC_REG_INT3, &val);
 	dev_info(info->dev, "%s: reg=%x, val=%x\n", __func__,
 		 MAX77693_MUIC_REG_INT3, val);
+#endif
 	return 0;
 }
 

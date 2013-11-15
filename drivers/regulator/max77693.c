@@ -65,7 +65,7 @@ static const struct voltage_map_desc *reg_voltage_map[] = {
 
 static inline int max77693_get_rid(struct regulator_dev *rdev)
 {
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	return rdev_get_id(rdev);
 }
 
@@ -73,7 +73,7 @@ static int max77693_list_voltage_safeout(struct regulator_dev *rdev,
 					 unsigned int selector)
 {
 	int rid = max77693_get_rid(rdev);
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	if (rid == MAX77693_ESAFEOUT1 || rid == MAX77693_ESAFEOUT2) {
 		switch (selector) {
 		case 0:
@@ -96,7 +96,7 @@ static int max77693_get_enable_register(struct regulator_dev *rdev,
 					int *reg, int *mask, int *pattern)
 {
 	int rid = max77693_get_rid(rdev);
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	switch (rid) {
 	case MAX77693_ESAFEOUT1...MAX77693_ESAFEOUT2:
 		*reg = MAX77693_CHG_REG_SAFEOUT_CTRL;
@@ -120,7 +120,7 @@ static int max77693_get_disable_register(struct regulator_dev *rdev,
 					int *reg, int *mask, int *pattern)
 {
 	int rid = max77693_get_rid(rdev);
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	switch (rid) {
 	case MAX77693_ESAFEOUT1...MAX77693_ESAFEOUT2:
 		*reg = MAX77693_CHG_REG_SAFEOUT_CTRL;
@@ -146,7 +146,7 @@ static int max77693_reg_is_enabled(struct regulator_dev *rdev)
 	struct i2c_client *i2c = max77693->iodev->i2c;
 	int ret, reg, mask, pattern;
 	u8 val;
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	ret = max77693_get_enable_register(rdev, &reg, &mask, &pattern);
 	if (ret == -EINVAL)
 		return 1;	/* "not controllable" */
@@ -165,7 +165,7 @@ static int max77693_reg_enable(struct regulator_dev *rdev)
 	struct max77693_data *max77693 = rdev_get_drvdata(rdev);
 	struct i2c_client *i2c = max77693->iodev->i2c;
 	int ret, reg, mask, pattern;
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	ret = max77693_get_enable_register(rdev, &reg, &mask, &pattern);
 	if (ret)
 		return ret;
@@ -178,7 +178,7 @@ static int max77693_reg_disable(struct regulator_dev *rdev)
 	struct max77693_data *max77693 = rdev_get_drvdata(rdev);
 	struct i2c_client *i2c = max77693->iodev->i2c;
 	int ret, reg, mask, pattern;
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	ret = max77693_get_disable_register(rdev, &reg, &mask, &pattern);
 	if (ret)
 		return ret;
@@ -191,7 +191,7 @@ static int max77693_get_voltage_register(struct regulator_dev *rdev,
 {
 	int rid = max77693_get_rid(rdev);
 	int reg, shift = 0, mask = 0x3f;
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	switch (rid) {
 	case MAX77693_ESAFEOUT1...MAX77693_ESAFEOUT2:
 		reg = MAX77693_CHG_REG_SAFEOUT_CTRL;
@@ -220,7 +220,7 @@ static int max77693_list_voltage(struct regulator_dev *rdev,
 	const struct voltage_map_desc *desc;
 	int rid = max77693_get_rid(rdev);
 	int val;
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	if (rid >= ARRAY_SIZE(reg_voltage_map) || rid < 0)
 		return -EINVAL;
 
@@ -250,7 +250,7 @@ static int max77693_get_voltage(struct regulator_dev *rdev)
 	int reg, shift, mask, ret;
 
 	u8 val;
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	ret = max77693_get_voltage_register(rdev, &reg, &shift, &mask);
 	if (ret)
 		return ret;
@@ -357,7 +357,7 @@ static int max77693_set_voltage_safeout(struct regulator_dev *rdev,
 	int reg, shift = 0, mask, ret;
 	int i = 0;
 	u8 val;
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	if (rid != MAX77693_ESAFEOUT1 && rid != MAX77693_ESAFEOUT2)
 		return -EINVAL;
 
@@ -386,7 +386,7 @@ static int max77693_set_voltage_safeout(struct regulator_dev *rdev,
 
 static int max77693_reg_enable_suspend(struct regulator_dev *rdev)
 {
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	return 0;
 }
 
@@ -396,7 +396,7 @@ static int max77693_reg_disable_suspend(struct regulator_dev *rdev)
 	struct i2c_client *i2c = max77693->iodev->i2c;
 	int ret, reg, mask, pattern;
 	int rid = max77693_get_rid(rdev);
-	dev_info(&rdev->dev, "func:%s\n", __func__);
+	dev_dbg(&rdev->dev, "func:%s\n", __func__);
 	ret = max77693_get_disable_register(rdev, &reg, &mask, &pattern);
 	if (ret)
 		return ret;
