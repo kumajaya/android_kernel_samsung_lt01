@@ -32,6 +32,8 @@
 #define LDI_ID_REG			0xDA
 #define LDI_ID_LEN			3
 
+#define DEBUG_PRINT 0
+
 struct lcd_info {
 	unsigned int			ldi_enable;
 	unsigned int			power;
@@ -245,7 +247,9 @@ static int s6d7aa0_mtp_init(struct lcd_info *lcd)
 
 static int s6d7aa0_ldi_init(struct lcd_info *lcd)
 {
+#if DEBUG_PRINT
 	dev_info(&lcd->ld->dev, "LDI ID %x\n",lcd->id[1]);
+#endif
 
 	if (lcd->id[1] == 0x8C)
 		s6d7aa0_id8c_init(lcd);
@@ -286,7 +290,9 @@ static int s6d7aa0_power_on(struct lcd_info *lcd)
 {
 	int ret = 0;
 
+#if DEBUG_PRINT
 	dev_info(&lcd->ld->dev, "%s\n", __func__);
+#endif
 
 	ret = s6d7aa0_ldi_init(lcd);
 	if (ret) {
@@ -315,7 +321,9 @@ static int s6d7aa0_power_off(struct lcd_info *lcd)
 {
 	int ret = 0;
 
+#if DEBUG_PRINT
 	dev_info(&lcd->ld->dev, "%s\n", __func__);
+#endif
 
 	lcd->ldi_enable = 0;
 	if(lcd->err_fg_enable) {
@@ -368,9 +376,11 @@ static int s6d7aa0_get_power(struct lcd_device *ld)
 
 static int s6d7aa0_check_fb(struct lcd_device *ld, struct fb_info *fb)
 {
+#if DEBUG_PRINT
 	struct lcd_info *lcd = lcd_get_data(ld);
 
 	dev_info(&lcd->ld->dev, "%s, fb%d\n", __func__, fb->node);
+#endif
 
 	return 0;
 }
@@ -412,10 +422,14 @@ void s6d7aa0_early_suspend(void)
 
 	set_dsim_lcd_enabled(0);
 
+#if DEBUG_PRINT
 	dev_info(&lcd->ld->dev, "+%s\n", __func__);
+#endif
 
 	s6d7aa0_power(lcd, FB_BLANK_POWERDOWN);
+#if DEBUG_PRINT
 	dev_info(&lcd->ld->dev, "-%s\n", __func__);
+#endif
 
 	return ;
 }
@@ -424,10 +438,14 @@ void s6d7aa0_late_resume(void)
 {
 	struct lcd_info *lcd = g_lcd;
 
+#if DEBUG_PRINT
 	dev_info(&lcd->ld->dev, "+%s\n", __func__);
+#endif
 	s6d7aa0_power(lcd, FB_BLANK_UNBLANK);
 
+#if DEBUG_PRINT
 	dev_info(&lcd->ld->dev, "-%s\n", __func__);
+#endif
 
 	set_dsim_lcd_enabled(1);
 
