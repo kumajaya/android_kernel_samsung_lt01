@@ -578,6 +578,13 @@ config SENSORS_HALL
 	help
 	  Say Y here to enable the HALL.
 
+config SENSORS_HALL_FLIP_HACK
+	tristate "Flip cover detector workaround"
+	depends on SENSORS_HALL
+	default y
+	help
+	  Say Y here to enable the flip cover detector.
+
 config KEYBOARD_TC370L_TOUCHKEY
 	tristate "Coreriver touchkey support"
 	help

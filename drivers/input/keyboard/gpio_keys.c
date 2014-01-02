@@ -66,6 +66,11 @@ struct gpio_keys_drvdata {
 	/* WARNING: this area can be expanded. Do NOT add any member! */
 };
 
+#ifdef CONFIG_SENSORS_HALL_FLIP_HACK
+int flip_cover_open;
+extern bool tsp_power_enabled;
+#endif
+
 /*
  * SYSFS interface for enabling/disabling keys and switches:
  *
@@ -348,7 +353,9 @@ static ssize_t key_pressed_show(struct device *dev,
 
 	for (i = 0; i < ddata->n_buttons; i++) {
 		struct gpio_button_data *bdata = &ddata->data[i];
+#ifndef CONFIG_SENSORS_HALL_FLIP_HACK
 		if (bdata->button->code != SW_FLIP)
+#endif
 			keystate |= bdata->key_state;
 	}
 
@@ -396,7 +403,9 @@ out:
 static ssize_t hall_detect_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
 {
+
 	struct gpio_keys_drvdata *ddata = dev_get_drvdata(dev);
+#ifndef CONFIG_SENSORS_HALL_FLIP_HACK
 	int i = 0;
 	int keystate = 0;
 
@@ -407,6 +416,9 @@ static ssize_t hall_detect_show(struct device *dev,
 	}
 
 	if (keystate)
+#else
+	if (ddata->flip_cover)
+#endif
 		sprintf(buf, "OPEN");
 	else
 		sprintf(buf, "CLOSE");
@@ -698,8 +710,17 @@ static void gpio_keys_report_event(struct gpio_button_data *bdata)
 		}
 
 #endif
+#ifdef CONFIG_SENSORS_HALL_FLIP_HACK
+		if (!flip_cover_open && button->code == KEY_POWER) {
+			/* printk(KERN_DEBUG"[FLIP_HACK] cover closed, ignore KEY_POWER\n"); */
+		}
+		else { 
+#endif
 		input_event(input, type, button->code, !!state);
 		input_sync(input);
+#ifdef CONFIG_SENSORS_HALL_FLIP_HACK
+		}
+#endif
 
 #if 0
 		if (button->code == KEY_POWER)
@@ -831,12 +852,28 @@ static void flip_cover_work(struct work_struct *work)
 
 	ddata->flip_cover = gpio_get_value(ddata->gpio_flip_cover);
 
+#if 0
 	printk(KERN_DEBUG "[keys] %s : %d\n",
 		__func__, ddata->flip_cover);
+#endif
 
+#ifdef CONFIG_SENSORS_HALL_FLIP_HACK
+	flip_cover_open = ddata->flip_cover;
+
+	if (!tsp_power_enabled && !flip_cover_open) {
+		/* printk("[FLIP_HACK] screen already off\n"); */
+	} else {
+		/* printk("[FLIP_HACK] about to trigger KEY_POWER event\n"); */
+		input_report_key(ddata->input, KEY_POWER, 1);
+		input_sync(ddata->input);
+		input_report_key(ddata->input, KEY_POWER, 0);
+		input_sync(ddata->input);
+	}
+#else
 	input_report_switch(ddata->input,
 		SW_FLIP, ddata->flip_cover);
 	input_sync(ddata->input);
+#endif
 }
 
 static irqreturn_t flip_cover_detect(int irq, void *dev_id)
@@ -986,7 +1023,7 @@ static int __devinit gpio_keys_probe(struct platform_device *pdev)
 	input->name = pdata->name ? : pdev->name;
 	input->phys = "gpio-keys/input0";
 	input->dev.parent = &pdev->dev;
-#ifdef CONFIG_SENSORS_HALL
+#if defined(CONFIG_SENSORS_HALL) && !defined(CONFIG_SENSORS_HALL_FLIP_HACK)
 	input->evbit[0] |= BIT_MASK(EV_SW);
 	input_set_capability(input, EV_SW, SW_FLIP);
 #endif
@@ -1134,7 +1171,7 @@ static int gpio_keys_suspend(struct device *dev)
 	if (device_may_wakeup(&pdev->dev)) {
 		for (i = 0; i < pdata->nbuttons; i++) {
 			struct gpio_keys_button *button = &pdata->buttons[i];
-#if defined(CONFIG_SENSORS_HALL)
+#if defined(CONFIG_SENSORS_HALL) && !defined(CONFIG_SENSORS_HALL_FLIP_HACK)
 			if (button->code == SW_FLIP)
 				button->wakeup = 1;
 #endif
@@ -1159,7 +1196,7 @@ static int gpio_keys_resume(struct device *dev)
 
 		struct gpio_keys_button *button = &pdata->buttons[i];
 
-#if defined(CONFIG_SENSORS_HALL)
+#if defined(CONFIG_SENSORS_HALL) && !defined(CONFIG_SENSORS_HALL_FLIP_HACK)
 		if (button->code == SW_FLIP)
 			button->wakeup = 1;
 #endif

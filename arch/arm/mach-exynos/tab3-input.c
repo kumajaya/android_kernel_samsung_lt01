@@ -534,7 +534,10 @@ void __init tab3_tsp_init(u32 system_rev)
 
 #if defined(CONFIG_TOUCHSCREEN_MMS252)
 #include <linux/i2c/mms252.h>
-static bool tsp_power_enabled;
+bool tsp_power_enabled;
+#ifdef CONFIG_SENSORS_HALL_FLIP_HACK
+EXPORT_SYMBOL(tsp_power_enabled);
+#endif
 struct tsp_callbacks *tsp_callbacks;
 struct tsp_callbacks {
 	void (*inform_charger)(struct tsp_callbacks *, bool);
@@ -1313,6 +1316,7 @@ struct gpio_keys_button tab3_buttons[] = {
 		  1, 1, sec_debug_check_crash_key),
 	GPIO_KEYS(KEY_HOMEPAGE, GPIO_OK_KEY,
 		  1, 1, sec_debug_check_crash_key),
+#ifndef CONFIG_SENSORS_HALL_FLIP_HACK
    	{
 		.code = SW_FLIP,
 		.gpio = GPIO_HALL_INT_N,
@@ -1323,11 +1327,15 @@ struct gpio_keys_button tab3_buttons[] = {
 		.value = 1,
 		.isr_hook = sec_debug_check_crash_key,
 	},
+#endif
 };
 
 struct gpio_keys_platform_data tab3_gpiokeys_platform_data = {
 	tab3_buttons,
 	ARRAY_SIZE(tab3_buttons),
+#ifdef CONFIG_SENSORS_HALL_FLIP_HACK
+	.gpio_flip_cover = GPIO_HALL_INT_N,
+#endif
 };
 
 static struct platform_device tab3_keypad = {
@@ -1339,8 +1347,22 @@ static struct platform_device tab3_keypad = {
 #endif
 void __init tab3_key_init(void)
 {
+	int err;
 #if defined(CONFIG_KEYBOARD_GPIO)
 	platform_device_register(&tab3_keypad);
+#ifdef CONFIG_SENSORS_HALL_FLIP_HACK
+	err = gpio_request(GPIO_HALL_INT_N, "GPIO_HALL_INT_N");
+
+	if (err)
+		printk(KERN_DEBUG "%s gpio_request error\n", __func__);
+	else {
+		s3c_gpio_setpull(GPIO_HALL_INT_N, S3C_GPIO_PULL_DOWN);
+		s5p_register_gpio_interrupt(GPIO_HALL_INT_N);
+		gpio_direction_input(GPIO_HALL_INT_N);
+		s3c_gpio_cfgpin(GPIO_HALL_INT_N, S3C_GPIO_SFN(0xF)); /* EINT */
+		gpio_free(GPIO_HALL_INT_N);
+	}
+#endif
 #endif
 }
 
