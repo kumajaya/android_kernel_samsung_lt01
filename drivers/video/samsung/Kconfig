@@ -38,8 +38,8 @@ config FB_S5P_VSYNC_THREAD
 	bool "S5P Framebuffer vsync thread"
 	depends on FB_S5P
 
-config FB_S5P_VSYNC_TIME
-	bool "S5P Framebuffer vsync_time sysfs"
+config FB_S5P_VSYNC_SYSFS
+	bool "S5P Framebuffer vsync via sysfs"
 	depends on FB_S5P_VSYNC_THREAD
 	default n
 
