@@ -2461,11 +2461,11 @@ static ssize_t touch_led_control(struct device *dev,
 		return count;
 	}
 
-	if (!(data == 0 || data == 1)) {
+	/* if (!(data == 0 || data == 1)) {
 		dev_err(&client->dev, "%s: wrong command(%d)\n",
 			__func__, data);
 		return count;
-	}
+	} */
 
 	if (data == 1) {
 #if DEBUG_PRINT
