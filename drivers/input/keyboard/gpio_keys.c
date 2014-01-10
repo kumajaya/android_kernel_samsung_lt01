@@ -862,6 +862,8 @@ static void flip_cover_work(struct work_struct *work)
 
 	if (!tsp_power_enabled && !flip_cover_open) {
 		/* printk("[FLIP_HACK] screen already off\n"); */
+	} else if (tsp_power_enabled && flip_cover_open) {
+		/* printk("[FLIP_HACK] screen already on\n"); */
 	} else {
 		/* printk("[FLIP_HACK] about to trigger KEY_POWER event\n"); */
 		input_report_key(ddata->input, KEY_POWER, 1);
