@@ -24,8 +24,8 @@ int get_api_version_wrapper(struct mali_session_data *session_data, _mali_uk_get
 	_mali_uk_get_api_version_s kargs;
     _mali_osk_errcode_t err;
 
-	u32 mem = _mali_ukk_report_memory_usage();
-	printk("Mali: mem_usage before %d : %u\n", _mali_osk_get_pid(), mem);
+	/* u32 mem = _mali_ukk_report_memory_usage();
+	printk("Mali: mem_usage before %d : %u\n", _mali_osk_get_pid(), mem); */
 
     MALI_CHECK_NON_NULL(uargs, -EINVAL);
 
